@@ -25,7 +25,6 @@
       line-height:1.45;
     }
 
-    /* Header / Poster top */
     header{
       background: linear-gradient(90deg,var(--green),var(--dark-green));
       color:white;
@@ -82,7 +81,7 @@
       gap:22px;
     }
 
-    /* Poster text only, no images */
+    /* Poster text only */
     .poster{
       background: linear-gradient(180deg, white 0%, #f8fdf9 100%);
       border-radius:10px;
@@ -91,11 +90,10 @@
       position:sticky;
       top:20px;
       height:fit-content;
-      font-weight: 700;
-      color: var(--dark-green);
     }
     .poster h2{
       margin:0 0 14px 0;
+      color:var(--dark-green);
       font-size:20px;
       letter-spacing:1px;
     }
@@ -120,6 +118,7 @@
       font-weight:800;
       letter-spacing:2px;
       user-select: all;
+      margin-top:10px;
     }
 
     /* Right column */
@@ -166,32 +165,39 @@
       color: white;
       border: none;
       padding: 12px 18px;
-      border-radius: 10px;
+      border-radius: 30px;
       font-weight: 700;
       cursor: pointer;
-      transition: background-color 0.25s ease, box-shadow 0.25s ease;
-      box-shadow: 0 4px 8px rgba(31, 122, 74, 0.3);
+      box-shadow: 0 4px 10px rgba(31, 122, 74, 0.3);
+      transition: background-color 0.28s ease, box-shadow 0.28s ease, transform 0.15s ease;
+      font-size: 15px;
+      user-select: none;
     }
     button:hover {
-      background-color: var(--dark-green);
-      box-shadow: 0 6px 14px rgba(15, 90, 50, 0.5);
+      background: var(--dark-green);
+      box-shadow: 0 6px 15px rgba(15, 90, 50, 0.5);
+      transform: translateY(-2px);
     }
     button:active {
-      background-color: #0b3c21;
-      box-shadow: 0 2px 6px rgba(15, 90, 50, 0.7);
+      transform: translateY(1px);
+      box-shadow: 0 3px 7px rgba(15, 90, 50, 0.3);
     }
+
     button.ghost {
       background: transparent;
       color: var(--dark-green);
-      border: 2px solid #a6c9a4;
+      border: 2px solid #dbeee0;
       font-weight: 600;
       box-shadow: none;
-      transition: background-color 0.25s ease, color 0.25s ease;
+      padding: 10px 18px;
+      border-radius: 30px;
+      transition: background-color 0.28s ease, color 0.28s ease, border-color 0.28s ease;
     }
     button.ghost:hover {
-      background-color: var(--accent);
-      color: var(--dark-green);
+      background: var(--dark-green);
+      color: white;
       border-color: var(--dark-green);
+      box-shadow: 0 6px 15px rgba(15, 90, 50, 0.5);
     }
 
     .pub-list{display:grid; gap:12px}
@@ -215,10 +221,10 @@
     .pub img{max-width:100%; height:auto; border-radius:6px; object-fit:cover}
     .pub .actions{display:flex; gap:8px; margin-top:8px}
 
-    /* Map */
+    /* Map: keep original size (as in your initial file) */
     .map-wrap iframe{
       width:100%;
-      height:320px;
+      height:320px; /* original height retained */
       border:0;
       border-radius:8px;
     }
@@ -260,12 +266,12 @@
   </header>
 
   <main>
-    <!-- poster text only -->
+    <!-- poster text only (left column) -->
     <aside class="poster" id="services">
       <h2>NOS SPÉCIALITÉS</h2>
       <ul class="specialties">
-        <li>Hematologie</li>
-        <li>Bacteriologie</li>
+        <li>Hématologie</li>
+        <li>Bactériologie</li>
         <li>Biochimie Clinique</li>
         <li>Parasitologie</li>
         <li>Mycologie</li>
@@ -278,20 +284,23 @@
       <div class="big-number">77 552 27 98</div>
     </aside>
 
-    <!-- right content -->
+    <!-- right content (map first, then publications) -->
     <section class="content-area">
 
       <!-- Map & contact -->
-      <div class="card">
+      <div class="card" id="location">
         <h3>Nous trouver</h3>
-        <p style="margin:0 0 8px 0">Emplacement général (Google Maps). Cliquez pour ouvrir dans Google Maps.</p>
+        <p style="margin:0 0 8px 0">Emplacement (Google Maps). Cliquez pour ouvrir dans Google Maps.</p>
 
-        <iframe
+        <div class="map-wrap">
+          <!-- Embedded search for the lab in Diamniadio, no API key required -->
+          <iframe
             loading="lazy"
             src="https://www.google.com/maps?q=Laboratoire+Biologie+M%C3%A9dicale+ALPHA+BIO+CITOYEN+ABC-LAB+Diamniadio+Senegal&output=embed"
             allowfullscreen
             referrerpolicy="no-referrer-when-downgrade">
           </iframe>
+        </div>
 
         <div id="contact" style="margin-top:12px; display:flex; gap:14px; align-items:center; justify-content:space-between;">
           <div>
@@ -319,7 +328,7 @@
           </div>
           <textarea id="pubContent" placeholder="Texte de la publication..." required></textarea>
           <div class="row" style="justify-content:flex-end;">
-            <button id="savePub">Publier</button>
+            <button id="savePub" type="button">Publier</button>
             <button class="ghost" id="clearForm" type="button">Vider</button>
           </div>
         </form>
@@ -339,9 +348,10 @@
   </footer>
 
   <script>
-    const PASSWORD = 'abc123'; // your publish password
+    // --- Publications manager stored in localStorage with password check ---
+    const PUBLISH_PASSWORD = 'abc123'; // change as needed
+    const STORAGE_KEY = 'abc_lab_publications_v1';
 
-    const form = document.getElementById('pubForm');
     const titleEl = document.getElementById('pubTitle');
     const dateEl = document.getElementById('pubDate');
     const contentEl = document.getElementById('pubContent');
@@ -349,8 +359,6 @@
     const listEl = document.getElementById('pubList');
     const saveBtn = document.getElementById('savePub');
     const clearBtn = document.getElementById('clearForm');
-
-    const STORAGE_KEY = 'abc_lab_publications_v1';
 
     function readStorage(){
       try{
@@ -366,6 +374,15 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     }
 
+    function fileToBase64(file){
+      return new Promise((res, rej)=>{
+        const fr = new FileReader();
+        fr.onload = ()=> res(fr.result);
+        fr.onerror = ()=> rej(new Error('File read error'));
+        fr.readAsDataURL(file);
+      });
+    }
+
     function renderList(){
       const items = readStorage().sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
       listEl.innerHTML = '';
@@ -377,16 +394,20 @@
         const pub = document.createElement('article');
         pub.className = 'pub';
         const left = document.createElement('div');
+
         const meta = document.createElement('div');
         meta.className = 'meta';
         meta.textContent = `${item.date || item.createdAt.slice(0,10)} • publié le ${new Date(item.createdAt).toLocaleString()}`;
+
         const title = document.createElement('strong');
         title.textContent = item.title;
         title.style.display='block';
         title.style.margin='4px 0 8px 0';
+
         const body = document.createElement('div');
         body.className='body';
         body.textContent = item.content;
+
         left.appendChild(meta);
         left.appendChild(title);
         left.appendChild(body);
@@ -403,11 +424,25 @@
           img.src = item.image;
           img.alt = 'Image publication';
           img.style.maxHeight = '160px';
+          img.style.cursor = 'pointer';
+          // clicking image opens in new tab
+          img.onclick = ()=> window.open(item.image, '_blank');
           right.appendChild(img);
         }
 
         const actions = document.createElement('div');
         actions.className='actions';
+
+        const share = document.createElement('button');
+        share.textContent = 'Copier texte';
+        share.onclick = async ()=>{
+          try{
+            await navigator.clipboard.writeText(item.title + "\n\n" + item.content);
+            alert('Texte copié dans le presse-papiers');
+          }catch(e){
+            alert('Impossible de copier automatiquement — sélectionnez et copiez manuellement.');
+          }
+        };
 
         const del = document.createElement('button');
         del.className='ghost';
@@ -418,17 +453,6 @@
           const filtered = all.filter(i => i.id !== item.id);
           writeStorage(filtered);
           renderList();
-        };
-
-        const share = document.createElement('button');
-        share.textContent = 'Copier texte';
-        share.onclick = async ()=>{
-          try{
-            await navigator.clipboard.writeText(item.title + "\\n\\n" + item.content);
-            alert('Texte copié dans le presse-papiers');
-          }catch(e){
-            alert('Impossible de copier automatiquement — sélectionnez et copiez manuellement.');
-          }
         };
 
         actions.appendChild(share);
@@ -448,16 +472,6 @@
       imageEl.value='';
     }
 
-    // convert image file to base64
-    function fileToBase64(file){
-      return new Promise((res, rej)=>{
-        const fr = new FileReader();
-        fr.onload = ()=> res(fr.result);
-        fr.onerror = ()=> rej(new Error('File read error'));
-        fr.readAsDataURL(file);
-      });
-    }
-
     saveBtn.addEventListener('click', async ()=>{
       const title = titleEl.value.trim();
       const content = contentEl.value.trim();
@@ -466,9 +480,8 @@
         return;
       }
 
-      // Ask for password before allowing publish
       const userPass = prompt("Veuillez saisir le mot de passe pour publier :");
-      if(userPass !== PASSWORD){
+      if(userPass !== PUBLISH_PASSWORD){
         alert("Mot de passe incorrect. Publication annulée.");
         return;
       }
@@ -496,11 +509,13 @@
       writeStorage(all);
       clearForm();
       renderList();
+      // scroll to top of pub list so user sees the new item
       listEl.scrollIntoView({behavior:'smooth'});
     });
 
     clearBtn.addEventListener('click', clearForm);
 
+    // seed initial content once
     (function seedOnce(){
       const cur = readStorage();
       if(cur.length === 0){
@@ -519,13 +534,14 @@
             content:'Journée de dépistage gratuite de la population locale le samedi prochain. Amenez une pièce d\'identité.',
             date:null,
             image:null,
-            createdAt: new Date().toISOString()
+            createdAt: new Date(Date.now()-3600*1000*24).toISOString()
           }
         ];
         writeStorage(sample);
       }
     })();
 
+    // initial render
     renderList();
   </script>
 </body>
