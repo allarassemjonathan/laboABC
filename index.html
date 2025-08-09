@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Laboratoire Alpha Bio Citoyen — ABC-LAB</title>
+  <style>
+    :root{
+      --green:#1f7a4a;
+      --dark-green:#0f5a32;
+      --accent:#9bd3b2;
+      --muted:#f3f6f4;
+      --text:#10211a;
+      --card-bg: #ffffffcc;
+      --shadow: 0 6px 20px rgba(16,33,26,0.12);
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background: linear-gradient(180deg,#f6faf8 0%, #ffffff 60%);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+
+    /* Header / Poster top */
+    header{
+      background: linear-gradient(90deg,var(--green),var(--dark-green));
+      color:white;
+      padding:28px 18px;
+      display:flex;
+      gap:18px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .logo{
+      min-width:160px;
+      max-width:240px;
+    }
+    .logo h1{
+      margin:0;
+      font-size:28px;
+      letter-spacing:1px;
+      line-height:1;
+    }
+    .logo small{font-size:12px; display:block; opacity:0.95}
+    .header-right{
+      margin-left:auto;
+      text-align:right;
+    }
+    .phone{
+      background:rgba(255,255,255,0.08);
+      padding:8px 14px;
+      border-radius:6px;
+      font-weight:700;
+      font-size:18px;
+      display:inline-block;
+    }
+    nav{
+      width:100%;
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+    }
+    .nav-link{
+      background: rgba(255,255,255,0.06);
+      color:white;
+      padding:8px 12px;
+      border-radius:6px;
+      text-decoration:none;
+      font-size:14px;
+    }
+
+    main{
+      max-width:1100px;
+      margin:20px auto;
+      padding:0 18px 60px;
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap:22px;
+    }
+
+    /* Left poster info */
+    .poster{
+      background: linear-gradient(180deg, white 0%, #f8fdf9 100%);
+      border-radius:10px;
+      padding:18px;
+      box-shadow:var(--shadow);
+      position:sticky;
+      top:20px;
+      height:fit-content;
+    }
+    .poster h2{
+      margin:0 0 14px 0;
+      color:var(--dark-green);
+      font-size:20px;
+      letter-spacing:1px;
+    }
+    .specialties{
+      list-style:none;
+      padding:0;
+      margin:0;
+    }
+    .specialties li{
+      padding:8px 6px;
+      border-bottom:1px solid #e6eee9;
+      font-weight:700;
+    }
+
+    .big-number{
+      margin-top:12px;
+      background:var(--dark-green);
+      color:white;
+      padding:10px;
+      border-radius:6px;
+      text-align:center;
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:2px;
+    }
+
+    /* Right column */
+    .content-area{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .card{
+      background:var(--card-bg);
+      border-radius:10px;
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+    h3{
+      margin:0 0 10px 0;
+      color:var(--dark-green);
+    }
+
+    /* Publications UI */
+    .pub-form{
+      display:grid;
+      gap:8px;
+    }
+    .pub-form input[type="text"],
+    .pub-form input[type="date"],
+    .pub-form textarea{
+      width:100%;
+      padding:10px;
+      border-radius:6px;
+      border:1px solid #dbeee0;
+      font-size:14px;
+    }
+    .pub-form textarea{min-height:120px; resize:vertical}
+    .row{
+      display:flex;
+      gap:8px;
+    }
+
+    /* Modern smooth buttons */
+    button {
+      background: var(--green);
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 30px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(31, 122, 74, 0.3);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
+      font-size: 15px;
+      user-select: none;
+    }
+    button:hover {
+      background: var(--dark-green);
+      box-shadow: 0 6px 15px rgba(15, 90, 50, 0.5);
+      transform: translateY(-2px);
+    }
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 3px 7px rgba(15, 90, 50, 0.3);
+    }
+
+    button.ghost {
+      background: transparent;
+      color: var(--dark-green);
+      border: 2px solid #dbeee0;
+      font-weight: 600;
+      box-shadow: none;
+      padding: 10px 18px;
+      border-radius: 30px;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    button.ghost:hover {
+      background: var(--dark-green);
+      color: white;
+      border-color: var(--dark-green);
+      box-shadow: 0 6px 15px rgba(15, 90, 50, 0.5);
+    }
+    button.ghost:active {
+      transform: translateY(1px);
+      box-shadow: 0 3px 7px rgba(15, 90, 50, 0.3);
+    }
+
+    .pub-list{display:grid; gap:12px}
+    .pub{
+      border-radius:8px;
+      overflow:hidden;
+      display:grid;
+      grid-template-columns: 1fr 120px;
+      gap:12px;
+      align-items:start;
+      padding:12px;
+      background:linear-gradient(180deg,#ffffff,#f6fcf6);
+      border:1px solid #e9f5ee;
+    }
+    .pub .meta{
+      font-size:12px;
+      color:#4a6a56;
+      margin-bottom:6px;
+    }
+    .pub .body{font-size:15px}
+    .pub img{max-width:100%; height:auto; border-radius:6px; object-fit:cover}
+    .pub .actions{display:flex; gap:8px; margin-top:8px}
+
+    /* Map */
+    .map-wrap iframe{
+      width:100%;
+      height:320px;
+      border:0;
+      border-radius:8px;
+    }
+
+    footer{
+      max-width:1100px;
+      margin:28px auto;
+      padding:16px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      color:#234633;
+    }
+
+    @media (max-width:980px){
+      main{grid-template-columns: 1fr; padding-bottom:120px}
+      .poster{position:relative; top:auto}
+      .pub{grid-template-columns: 1fr}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <h1>ALPHA BIO CITOYEN</h1>
+      <small>Laboratoire — Biologie Médicale — ABC-LAB</small>
+      <nav>
+        <a class="nav-link" href="#publications">Publications</a>
+        <a class="nav-link" href="#services">Nos Spécialités</a>
+        <a class="nav-link" href="#contact">Contact</a>
+      </nav>
+    </div>
+
+    <div class="header-right">
+      <div style="font-size:13px; opacity:0.95">Analyses: Hématologie • Bactériologie • Virologie</div>
+      <div class="phone">77 552 27 98</div>
+    </div>
+  </header>
+
+  <main>
+    <!-- poster left -->
+    <aside class="poster" id="services">
+      <h2>NOS SPÉCIALITÉS</h2>
+      <ul class="specialties">
+        <li>Hematologie</li>
+        <li>Bacteriologie</li>
+        <li>Biochimie Clinique</li>
+        <li>Parasitologie</li>
+        <li>Mycologie</li>
+        <li>Auto immunité</li>
+        <li>Biologie de la reproduction</li>
+        <li>Spermogramme</li>
+        <li>Virologie</li>
+        <li>Génétique</li>
+      </ul>
+
+      <div style="margin-top:14px;">
+        <img src="/mnt/data/80cd6327-1024-473a-b5e3-3e7f20ae715f.png" alt="Poster" style="width:100%; border-radius:8px; margin-top:10px; object-fit:cover" />
+      </div>
+
+      <div class="big-number">77 552 27 98</div>
+    </aside>
+
+    <!-- right content -->
+    <section class="content-area">
+
+      <!-- Map & contact (moved up) -->
+      <div class="card">
+        <h3>Nous trouver</h3>
+        <p style="margin:0 0 8px 0">Emplacement général (Google Maps). Cliquez pour ouvrir dans Google Maps.</p>
+
+        <div class="map-wrap">
+          <!-- Embed map focused on lab in Diamniadio, Senegal -->
+          <iframe
+            loading="lazy"
+            src="https://www.google.com/maps?q=Laboratoire+Biologie+M%C3%A9dicale+ALPHA+BIO+CITOYEN+ABC-LAB+Diamniadio+Senegal&output=embed"
+            allowfullscreen
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+
+        <div id="contact" style="margin-top:12px; display:flex; gap:14px; align-items:center; justify-content:space-between;">
+          <div>
+            <strong>ALPHA BIO CITOYEN</strong><br/>
+            Téléphone: <a href="tel:+7775522798">77 552 27 98</a><br/>
+            Email: <a href="mailto:contact@alphabiocitoyen.example">contact@alphabiocitoyen.example</a>
+          </div>
+
+          <div style="text-align:right; font-size:12px; color:#4a6a56;">
+            Horaires: Lun - Sam<br/>08:00 — 17:00
+          </div>
+        </div>
+      </div>
+
+      <!-- Publications (moved down) -->
+      <div class="card" id="publications">
+        <h3>Publications & Annonces</h3>
+        <p style="margin:0 0 12px 0; color:#456f57;">Publiez des annonces, résultats, offres d'emploi ou comptes-rendus. Les publications restent présentes localement dans le navigateur.</p>
+
+        <form class="pub-form" id="pubForm" onsubmit="return false;">
+          <input type="text" id="pubTitle" placeholder="Titre" required />
+          <div class="row">
+            <input type="date" id="pubDate" />
+            <input type="file" id="pubImage" accept="image/*" />
+          </div>
+          <textarea id="pubContent" placeholder="Texte de la publication..." required></textarea>
+          <div class="row" style="justify-content:flex-end;">
+            <button id="savePub">Publier</button>
+            <button class="ghost" id="clearForm" type="button">Vider</button>
+          </div>
+        </form>
+
+        <div style="margin-top:14px;">
+          <h4 style="margin:0 0 8px 0;">Publications récentes</h4>
+          <div id="pubList" class="pub-list" aria-live="polite"></div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer>
+    <div>© <strong>ALPHA BIO CITOYEN</strong> — Laboratoire de Biologie Médicale</div>
+    <div style="opacity:0.9">Téléphone: <a href="tel:+7775522798">77 552 27 98</a></div>
+  </footer>
+
+  <script>
+    // --- Simple publications manager stored in localStorage with password check ---
+    const PASSWORD = "abc123"; // Change this password as needed
+
+    const form = document.getElementById('pubForm');
+    const titleEl = document.getElementById('pubTitle');
+    const dateEl = document.getElementById('pubDate');
+    const contentEl = document.getElementById('pubContent');
+    const imageEl = document.getElementById('pubImage');
+    const listEl = document.getElementById('pubList');
+    const saveBtn = document.getElementById('savePub');
+    const clearBtn = document.getElementById('clearForm');
+
+    const STORAGE_KEY = 'abc_lab_publications_v1';
+
+    function readStorage(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return [];
+        return JSON.parse(raw);
+      }catch(e){
+        console.error('Storage read error', e);
+        return [];
+      }
+    }
+    function writeStorage(items){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    }
+
+    function renderList(){
+      const items = readStorage().sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+      listEl.innerHTML = '';
+      if(items.length === 0){
+        listEl.innerHTML = '<div style="color:#6f8a76">Aucune publication pour le moment — créez-en une.</div>';
+        return;
+      }
+      items.forEach(item=>{
+        const pub = document.createElement('article');
+        pub.className = 'pub';
+        const left = document.createElement('div');
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = `${item.date || item.createdAt.slice(0,10)} • publié le ${new Date(item.createdAt).toLocaleString()}`;
+        const title = document.createElement('strong');
+        title.textContent = item.title;
+        title.style.display='block';
+        title.style.margin='4px 0 8px 0';
+        const body = document.createElement('div');
+        body.className='body';
+        body.textContent = item.content;
+        left.appendChild(meta);
+        left.appendChild(title);
+        left.appendChild(body);
+
+        const right = document.createElement('div');
+        right.style.textAlign='right';
+        right.style.display='flex';
+        right.style.flexDirection='column';
+        right.style.justifyContent='flex-start';
+        right.style.gap='8px';
+
+        if(item.image){
+          const img = document.createElement('img');
+          img.src = item.image;
+          img.alt = 'Image publication';
+          img.style.maxHeight = '160px';
+          right.appendChild(img);
+        }
+
+        const actions = document.createElement('div');
+        actions.className='actions';
+
+        const del = document.createElement('button');
+        del.className='ghost';
+        del.textContent='Supprimer';
+        del.onclick = ()=>{
+          if(!confirm('Supprimer cette publication ?')) return;
+          const all = readStorage();
+          const filtered = all.filter(i => i.id !== item.id);
+          writeStorage(filtered);
+          renderList();
+        };
+
+        const share = document.createElement('button');
+        share.textContent = 'Copier texte';
+        share.onclick = async ()=>{
+          try{
+            await navigator.clipboard.writeText(item.title + "\\n\\n" + item.content);
+            alert('Texte copié dans le presse-papiers');
+          }catch(e){
+            alert('Impossible de copier automatiquement — sélectionnez et copiez manuellement.');
+          }
+        };
+
+        actions.appendChild(share);
+        actions.appendChild(del);
+        right.appendChild(actions);
+
+        pub.appendChild(left);
+        pub.appendChild(right);
+        listEl.appendChild(pub);
+      });
+    }
+
+    function clearForm(){
+      titleEl.value='';
+      dateEl.value='';
+      contentEl.value='';
+      imageEl.value='';
+    }
+
+    // convert image file to base64
+    function fileToBase64(file){
+      return new Promise((res, rej)=>{
+        const fr = new FileReader();
+        fr.onload = ()=> res(fr.result);
+        fr.onerror = ()=> rej(new Error('File read error'));
+        fr.readAsDataURL(file);
+      });
+    }
+
+    saveBtn.addEventListener('click', async ()=>{
+      const title = titleEl.value.trim();
+      const content = contentEl.value.trim();
+      if(!title || !content){
+        alert('Veuillez saisir un titre et du contenu.');
+        return;
+      }
+
+      // Ask for password before allowing publish
+      const userPass = prompt("Veuillez saisir le mot de passe pour publier :");
+      if(userPass !== PASSWORD){
+        alert("Mot de passe incorrect. Publication annulée.");
+        return;
+      }
+
+      let imageData = null;
+      if(imageEl.files && imageEl.files[0]){
+        try{
+          imageData = await fileToBase64(imageEl.files[0]);
+        }catch(e){
+          console.warn('Image read failed', e);
+        }
+      }
+
+      const item = {
+        id: 'pub_' + Date.now(),
+        title,
+        content,
+        date: dateEl.value || null,
+        image: imageData,
+        createdAt: new Date().toISOString()
+      };
+
+      const all = readStorage();
+      all.push(item);
+      writeStorage(all);
+      clearForm();
+      renderList();
+      // scroll to top of publications list so user sees new item
+      listEl.scrollIntoView({behavior:'smooth'});
+    });
+
+    clearBtn.addEventListener('click', clearForm);
+
+    // initial demo content (only add if storage empty)
+    (function seedOnce(){
+      const cur = readStorage();
+      if(cur.length === 0){
+        const sample = [
+          {
+            id:'seed1',
+            title:'Ouverture du laboratoire',
+            content:'Le laboratoire Alpha Bio Citoyen est ouvert pour les analyses médicales. Contactez-nous pour prise de rendez-vous.',
+            date:null,
+            image:null,
+            createdAt: new Date().toISOString()
+          },
+          {
+            id:'seed2',
+            title:'Campagne de dépistage gratuite',
+            content:'Journée de dépistage gratuite de la population locale le samedi prochain. Amenez une pièce d\'identité.',
+            date:null,
+            image:null,
+            createdAt: new Date(Date.now()-3600*1000*24).toISOString()
+          }
+        ];
+        writeStorage(sample);
+      }
+    })();
+
+    // render on load
+    renderList();
+  </script>
+</body>
+</html>
